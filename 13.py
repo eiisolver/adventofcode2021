@@ -3,10 +3,11 @@ def fold_value(v, fold_value):
     return v if v <= fold_value else 2 * fold_value - v
 
 def fold(dots, instr):
-    if instr[0] == 'x':
-        return {(fold_value(x[0], instr[1]), x[1]) for x in dots}
+    axis, value = instr
+    if axis == 'x':
+        return {(fold_value(x, value), y) for x, y in dots}
     else:
-        return {(x[0], fold_value(x[1], instr[1])) for x in dots}
+        return {(x, fold_value(y, value)) for x, y in dots}
 
 def part1(dots, instruction):
     print('Visible after fold 1', len(fold(dots, instruction)))
@@ -14,8 +15,8 @@ def part1(dots, instruction):
 def part2(dots, instructions):
     for inst in instructions:
         dots = fold(dots, inst)
-    w = max(x[0] for x in dots) + 1
-    h = max(x[1] for x in dots) + 1
+    w = max(x for x, _ in dots) + 1
+    h = max(y for _, y in dots) + 1
     print('Result of all folds:')
     for y in range(h):
         for x in range(w):
